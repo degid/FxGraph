@@ -128,7 +128,8 @@ void GrafDataTab::on_btLoad_clicked()
         csvFile.close();
 
         // Построение загрузенного графика
-        emit uploadData();
+        if(dGraph->fromSave)
+            emit uploadData();
     }
 }
 
