@@ -513,6 +513,19 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>cbxFunction</tabstop>
+  <tabstop>lineEditA</tabstop>
+  <tabstop>lineEditB</tabstop>
+  <tabstop>lineEditC</tabstop>
+  <tabstop>lineEditFrom</tabstop>
+  <tabstop>lineEditTo</tabstop>
+  <tabstop>lineEditStep</tabstop>
+  <tabstop>btStart</tabstop>
+  <tabstop>btPause</tabstop>
+  <tabstop>btBreak</tabstop>
+  <tabstop>graphicsView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

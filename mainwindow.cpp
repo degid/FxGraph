@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     bluePen->setWidth(2);
 
     scene = new QGraphicsScene(this);
+    scene->setSceneRect(scene->itemsBoundingRect());
     ui->graphicsView->setScene(scene);
 
     plot = new DataGraph{0, 0, 0, 0, 0, 0, 0, 0, 0, false, {}};
@@ -213,6 +214,8 @@ void MainWindow::on_btStart_clicked()
         progress++;
         setProgress(progress, allSteps);
 
+        scene->setSceneRect(scene->itemsBoundingRect());
+
     } while (!flagBreak && fx_X1 <= plot->To);
     // FIXME
     // не останавливается цикл при закрытии формы на паузе
@@ -221,6 +224,8 @@ void MainWindow::on_btStart_clicked()
     ui->btStart->setEnabled(true);
     ui->btPause->setEnabled(false);
     flagBreak = true;
+
+
 }
 
 void MainWindow::on_btPause_clicked()

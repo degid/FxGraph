@@ -116,6 +116,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btSave</tabstop>
+  <tabstop>btLoad</tabstop>
+  <tabstop>tableView</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
