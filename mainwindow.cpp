@@ -33,6 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete plot;
+    delete Fx;
     delete ui;
 }
 
@@ -120,7 +122,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
         lbFxFormula->setText(ui->cbxFunction->currentText());
 
         tabUi->setTableData(plot);
-
         tabUi->show();
     }
 }
@@ -159,9 +160,7 @@ void MainWindow::on_btStart_clicked()
     //xAxis = scene->addLine(QLineF(fx_X1, 0, plot->To, 0), *blackPen);
     //yAxis = scene->addLine(QLineF(0, fx_X1, 0, plot->To), *blackPen);
 
-    double allSteps = (abs(plot->From) + abs(plot->To)) / plot->Step;
     int progress = 0;
-
     if(plot->fromSave){
         getDataFromData();
 
@@ -178,20 +177,19 @@ void MainWindow::on_btStart_clicked()
             }
             progress++;
         }
-
-        setProgress(progress, allSteps);
         on_btPause_clicked();
 
     } else {
         getDataFromForm();
         fx_X1 = plot->From;
     }
+    double allSteps = (abs(plot->From) + abs(plot->To)) / plot->Step;
+    setProgress(progress, allSteps);
 
     fx_X2 = fx_X1 + plot->Step;
     fcnPtr = Fx->getFuncrion(ui->cbxFunction->currentIndex());
 
     ui->btStart->setEnabled(false);
-
     do {
         QCoreApplication::processEvents();
         if(flagPause && !flagBreak){
@@ -224,8 +222,6 @@ void MainWindow::on_btStart_clicked()
     ui->btStart->setEnabled(true);
     ui->btPause->setEnabled(false);
     flagBreak = true;
-
-
 }
 
 void MainWindow::on_btPause_clicked()
