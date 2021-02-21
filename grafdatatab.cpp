@@ -22,14 +22,14 @@ void GrafDataTab::setTableData(DataGraph *dataGraph)
     model->setHeaderData(1, Qt::Horizontal, "Y");
     ui->tableView->setModel(model);
 
-    std::map <double, double> :: iterator it = dGraph->data.begin();
+    std::list<PairXY> :: iterator it = dGraph->data.begin();
     for (int i = 0; it != dGraph->data.end(); it++, i++)
       {
           QModelIndex index = model->index(i, 0, QModelIndex());
-          model->setData(index, (*it).first);
+          model->setData(index, (*it).x);
 
           index = model->index(i, 1, QModelIndex());
-          model->setData(index, (*it).second);
+          model->setData(index, (*it).y);
       }
 }
 
@@ -53,8 +53,7 @@ void GrafDataTab::on_btSave_clicked()
         textData += QString::number(static_cast<double>(dGraph->From)) + ", ";
         textData += QString::number(static_cast<double>(dGraph->To)) + ", ";
         textData += QString::number(static_cast<double>(dGraph->Step)) + ", ";
-        textData += QString::number(static_cast<double>(dGraph->X)) + ", ";
-        textData += QString::number(static_cast<int>(dGraph->progress)) + "\n";
+        textData += QString::number(static_cast<double>(dGraph->X)) + "\n";
 
         for(int i = 0; i < ui->tableView->model()->rowCount(); i++){
             textData += model->data(model->index(i,0)).toString();
@@ -93,9 +92,9 @@ void GrafDataTab::on_btLoad_clicked()
             textData = csvFile.readLine();
             txtList = textData.split(",");
 
-            if(txtList.count() != 9){
+            if(txtList.count() != 8){
                 dGraph->fromSave = false;
-                MsgError("Bad data file");
+                Msg::Error("Bad data file");
                 break;
             }
 
@@ -108,7 +107,6 @@ void GrafDataTab::on_btLoad_clicked()
             dGraph->To = txtList[5].trimmed().toDouble();
             dGraph->Step = txtList[6].trimmed().toDouble();
             dGraph->X = txtList[7].trimmed().toDouble();
-            dGraph->progress = txtList[8].trimmed().toDouble();
 
             // Значения таблицы
             dGraph->data.clear();
@@ -118,10 +116,10 @@ void GrafDataTab::on_btLoad_clicked()
 
                 if(txtList.count() != 2){
                     dGraph->fromSave = false;
-                    MsgError("Bad data file");
+                    Msg::Error("Bad data file");
                     break;
                 }
-                dGraph->data.insert(std::pair<double,double>(txtList[0].trimmed().toDouble(), txtList[1].trimmed().toDouble()));
+                dGraph->data.push_back(PairXY{txtList[0].trimmed().toDouble(), txtList[1].trimmed().toDouble()});
             }
         } while(0);
 
@@ -131,12 +129,4 @@ void GrafDataTab::on_btLoad_clicked()
         if(dGraph->fromSave)
             emit uploadData();
     }
-}
-
-void GrafDataTab::MsgError(QString msg)
-{
-    QMessageBox MsgError;
-    MsgError.setText(msg);
-    MsgError.setIcon(QMessageBox::Critical);
-    MsgError.exec();
 }

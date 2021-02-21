@@ -11,6 +11,7 @@
 #include <QString>
 
 #include "grapher.h"
+#include "msg.h"
 
 namespace Ui {
 class GrafDataTab;

@@ -1,13 +1,15 @@
 ﻿#ifndef GRAPHER_H
 #define GRAPHER_H
 
-//#include <QGraphicsItem>
-//#include <QPainter>
 #include <functional>
-#include <map>
+#include <list>
 
-// FIXME
-// удалить progress
+struct PairXY
+{
+    double x;
+    double y;
+};
+
 struct DataGraph
 {
     int fX;
@@ -20,9 +22,8 @@ struct DataGraph
     double Step;
     double X;
 
-    double progress;
     bool fromSave;
-    std::map <double, double> data;
+    std::list<PairXY> data;
 };
 
 class FxFormula

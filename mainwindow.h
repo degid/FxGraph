@@ -11,6 +11,7 @@
 
 #include "grapher.h"
 #include "grafdatatab.h"
+#include "msg.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -49,6 +50,7 @@ private:
     void getDataFromForm();
     void getDataFromData();
     void statusForm(bool);
+    bool checkForm();
     void mousePressEvent(QMouseEvent*);
     void setProgress(int, double);
 

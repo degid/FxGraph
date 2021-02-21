@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     scene->setSceneRect(scene->itemsBoundingRect());
     ui->graphicsView->setScene(scene);
 
-    plot = new DataGraph{0, 0, 0, 0, 0, 0, 0, 0, 0, false, {}};
+    plot = new DataGraph{0, 0, 0, 0, 0, 0, 0, 0, false, {}};
     Fx = new FxFormula;
 
     flagPause = false;
@@ -75,7 +75,6 @@ void MainWindow::getDataFromForm()
     plot->Step = ui->lineEditStep->text().toDouble();
 
     plot->X = plot->From;
-    plot->progress = 0;
     plot->fromSave = false;
 
     plot->data.clear();
@@ -107,6 +106,21 @@ void MainWindow::statusForm(bool status)
     ui->lineEditStep->setEnabled(status);
 }
 
+bool MainWindow::checkForm()
+{
+    if(ui->lineEditA->text().isEmpty()
+            || ui->lineEditB->text().isEmpty()
+            || ui->lineEditC->text().isEmpty()
+            || ui->lineEditFrom->text().isEmpty()
+            || ui->lineEditTo->text().isEmpty()
+            || ui->lineEditStep->text().isEmpty())
+    {
+        Msg::Error("Some parameters are not set");
+        return false;
+    }
+    return true;
+}
+
 // FIXME реализовать обработку кликов через QGraphicsView
 // !!!
 void MainWindow::mousePressEvent(QMouseEvent *event)
@@ -135,19 +149,6 @@ void MainWindow::on_btStart_clicked()
 {
     scene->clear();
 
-    if(flagBreak){
-        statusForm(true);
-        flagBreak = false;
-        flagPause = false;
-
-        ui->btStart->setText("Start");
-        ui->btPause->setEnabled(true);
-        return;
-
-    } else {
-        statusForm(false);
-    }
-
     std::function<double(double, double, double, double)> fcnPtr;
 
     double fx_X1 = 0, fx_X2 = 0;
@@ -164,12 +165,12 @@ void MainWindow::on_btStart_clicked()
     if(plot->fromSave){
         getDataFromData();
 
-        std::map <double, double> :: iterator it = plot->data.begin();
+        std::list <PairXY> :: iterator it = plot->data.begin();
         for (int i = 0; it != plot->data.end(); it++, i++) {
-            fx_X1 = it->first; fx_Y1 = it->second;
+            fx_X1 = it->x; fx_Y1 = it->y;
             it++;
             if(it != plot->data.end()){
-                fx_X2 = it->first; fx_Y2 =  it->second;
+                fx_X2 = it->x; fx_Y2 =  it->y;
                 graphSegment = scene->addLine(QLineF(fx_X1, fx_Y1, fx_X2, fx_Y2), *bluePen);
                 it--;
             } else {
@@ -183,6 +184,28 @@ void MainWindow::on_btStart_clicked()
         getDataFromForm();
         fx_X1 = plot->From;
     }
+
+    if(flagBreak){
+        statusForm(true);
+        flagBreak = false;
+        flagPause = false;
+
+        ui->btStart->setText("Start");
+        ui->btPause->setEnabled(true);
+
+        plot->data.clear();
+
+        return;
+
+    } else {
+        if(checkForm()) {
+            statusForm(false);
+        } else {
+            return;
+        }
+
+    }
+
     double allSteps = (abs(plot->From) + abs(plot->To)) / plot->Step;
     setProgress(progress, allSteps);
 
@@ -203,7 +226,7 @@ void MainWindow::on_btStart_clicked()
 
         graphSegment = scene->addLine(QLineF(fx_X1, fx_Y1, fx_X2, fx_Y2), *bluePen);
 
-        plot->data.insert(std::pair<double,double>(fx_X1, fx_Y1));
+        plot->data.push_back(PairXY{fx_X1, fx_Y1});
 
         fx_X1 = fx_X2;
         plot->X = fx_X1;
@@ -241,5 +264,4 @@ void MainWindow::on_btPause_clicked()
 void MainWindow::on_btBreak_clicked()
 {
     flagBreak = true;
-    qDebug() <<  plot->A;
 }

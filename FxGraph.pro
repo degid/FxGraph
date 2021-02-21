@@ -12,12 +12,14 @@ SOURCES += \
     grafdatatab.cpp \
     grapher.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    msg.cpp
 
 HEADERS += \
     grafdatatab.h \
     grapher.h \
-    mainwindow.h
+    mainwindow.h \
+    msg.h
 
 FORMS += \
     grafdatatab.ui \
